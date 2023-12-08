@@ -3,6 +3,7 @@
     "iostream": "cpp",
     "string_view": "cpp",
     "ostream": "cpp",
-    "cmath": "cpp"
+    "cmath": "cpp",
+    "tuple": "cpp"
   }
 }
