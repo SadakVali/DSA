@@ -1,13 +1,13 @@
-# Ignore all
-*
+# # Ignore all
+# *
 
-# Unignore all with extensions
-!*.*
+# # Unignore all with extensions
+# !*.*
 
-# Unignore all dirs
-!*/
+# # Unignore all dirs
+# !*/
 
 
-*.o
-*
-!*.*
+# *.o
+# *
+# !*.*
