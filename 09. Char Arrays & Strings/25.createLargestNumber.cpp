@@ -14,7 +14,7 @@ string create_largest_num (vector<int> &nums) {
     vector<string> snums;
     for (auto num : nums) snums.push_back(to_string(num));
     sort(snums.begin(), snums.end(), my_comp);
-    if (snums[0] == "0") return "0";
+    if (snums[0] == "0") return "0"; // You will miss this
     string ans = "";
     for (auto str : snums) ans += str;
     return ans;
