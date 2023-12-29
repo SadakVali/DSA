@@ -22,39 +22,46 @@ bool is_this_prime2 (int &num) {
     return true;
 }
 
-
-int main () {
-    auto start = chrono::high_resolution_clock::now();
-
-    int prime_count = 0, n = 30000;
-
-    // // NON-ERATOSTHENESE METHOD O(n^2)
-    // for (int i=0; i<n; i++) {
-    //     if (is_this_prime2(i)) prime_count++;
-    // }
-
-    // ERATOSTHENESE METHOD O(n*lg(lg(n)))
+int eratosthenese_method (int n) {
     if (n <= 1) return 0;
-    int threshold = sqrt(n), consonant;
-    vector<bool> sieve(n, true);
+    int prime_count=0, threshold=sqrt(n), consonant, curr_prime_double;
+    vector<bool> sieve(n+1, true);
     sieve[0] = sieve[1] = false;
-    for (int curr_prime=2; curr_prime<n; curr_prime++) {
+    for (int curr_prime=2; curr_prime<=threshold; curr_prime++) {
         if (sieve[curr_prime]) {
-            prime_count++;
-            if (curr_prime <= threshold) {
-                consonant = curr_prime*curr_prime;
-                while (consonant < n) {
-                    sieve[consonant] = false;
-                    consonant += curr_prime;
-                }
+            consonant = curr_prime*curr_prime;
+            curr_prime_double = (curr_prime << 1);
+            while (consonant <= n) {
+                sieve[consonant] = false;
+                if (curr_prime & 1) consonant += curr_prime_double;
+                else consonant += curr_prime;
             }
         }
     }
-    cout << "Number of Primes between [0, " << n << ") : " << prime_count << endl;
+    for (int i=0; i<n+1; i++) {
+        if (sieve[i]) prime_count++;
+    }
+    return prime_count;
+}
 
+
+
+int main () {
+    auto start = chrono::high_resolution_clock::now();
+    // INPUT
+    int prime_count = 0, n = 30000;
+    // PROCESSING
+    // // M1 -> naive method O(n^2)
+    // for (int i=0; i<n; i++) {
+    //     if (is_this_prime2(i)) prime_count++;
+    // }
+    // M2 -> eratosthenese method O(n*lg(lg(n)))
+    prime_count = eratosthenese_method(n);
+    // OUTPUT
+    cout << "Number of Primes between [0, " << n << "] : " << prime_count << endl;
     auto end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(end-start);
-    cout << "Time Taken : " << duration.count() << " milli seconds" << endl;
+    cout << "Time Taken : " << duration.count() << " milliseconds" << endl;
     cout << endl << endl << endl;
     return 0;
 }
