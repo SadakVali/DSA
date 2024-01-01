@@ -55,11 +55,38 @@ vector<int> find_primes (int n) {
     return base_primes;
 }
 
+int find_first_consonant_in_range(int L, int prime) {
+    // first consonant wrt base prime
+    int consonant = prime*prime;
+    // first multiple of base prime in the segmented seive
+    int first_multiple = (L/prime)*prime;
+    if (first_multiple < L) first_multiple += prime;
+    if ((prime & 1) && ((first_multiple & 1) == 0)) first_multiple += prime;
+    return max(consonant, first_multiple);
+}
+
+vector<bool> prepare_seg_seive_to_find_primes_in_a_range(int L, int R, vector<int> &base_primes) {
+    vector<bool> seg_seive(R-L+1, true);
+    if (L == 0) seg_seive[0] = seg_seive[1] = false;
+    if (L == 1) seg_seive[0] = false;
+    for (int prime : base_primes) {
+        int consonant = find_first_consonant_in_range(L, prime);
+        int prime_double = (prime << 1);
+        while (consonant <= R) {
+            seg_seive[consonant-L] = false;
+            if (prime & 1) consonant += prime_double;
+            else consonant += prime;
+        }
+    }
+    return seg_seive;
+}
+
+
 int main() {
     auto start = chrono::high_resolution_clock::now();
     // ################## Your code starts below ##################
     // INPUT
-    int L=0, R=30000;
+    int L=10000, R=30000;
     // PROCESSING
     // STEP-1 -> Generate List of all Primes responsible for marking seg seive [L, R].
     //           That is Generate List of all primes in the range [0, sqrt(R)].
@@ -68,23 +95,7 @@ int main() {
     cout << endl;
 
     // STEP-2 -> mark all the consonants in te segmented seive
-    vector<bool> seg_seive(R-L+1, true);
-    if (L == 0) seg_seive[0] = seg_seive[1] = false;
-    if (L == 1) seg_seive[0] = false;
-    for (int prime : base_primes) {
-        // first consonant wrt base prime
-        int consonant = prime*prime;
-        // first multiple of base prime in the segmented seive
-        int first_multiple = (L/prime)*prime;
-        if (first_multiple < L) first_multiple += prime;
-        consonant = max(consonant, first_multiple);
-        int prime_double = 2*prime;
-        while (consonant <= R) {
-            seg_seive[consonant-L] = false;
-            if (prime & 1) consonant += prime_double;
-            else consonant += prime;
-        }
-    }
+    vector<bool> seg_seive = prepare_seg_seive_to_find_primes_in_a_range(L, R, base_primes);
 
     // STEP-3 -> print all the primes in the given range [L, R]
     int ctr = 0;
